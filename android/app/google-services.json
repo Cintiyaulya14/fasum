@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "447956435710",
+    "project_id": "fasum-app-16ccb",
+    "storage_bucket": "fasum-app-16ccb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:447956435710:android:52deccfec2075b7fcb9baf",
+        "android_client_info": {
+          "package_name": "com.example.fasum"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "447956435710-b9o46kr9d4hqmdrnka49n1k33be0gn56.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2sRW-aoPKUhKb9IJVuPfzUiVAgmPaO0U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "447956435710-b9o46kr9d4hqmdrnka49n1k33be0gn56.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -8,10 +8,13 @@ class SignInScreen extends StatefulWidget {
   @override
   SignInScreenState createState() => SignInScreenState();
 }
+
 class SignInScreenState extends State<SignInScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
   String _errorMessage = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,16 +46,62 @@ class SignInScreenState extends State<SignInScreen> {
               const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () async {
+                  final email = _emailController.text.trim();
+                  final password = _passwordController.text.trim();
+
+                  // Validasi email
+                  if (email.isEmpty || !isValidEmail(email)) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('Please enter a valid email')),
+                    );
+                    return;
+                  }
+
+                  // validasi password
+                  if (password.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('Please enter your password')),
+                    );
+                    return;
+                  }
+
                   try {
-                    await
-                    FirebaseAuth.instance.signInWithEmailAndPassword(
-                      email: _emailController.text,
-                      password: _passwordController.text,
+                    await FirebaseAuth.instance.signInWithEmailAndPassword(
+                      email: email,
+                      password: password,
                     );
                     Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => const
-                      HomeScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const HomeScreen()),
                     );
+                  } on FirebaseAuthException catch (error) {
+                    print('Error code: ${error.code}');
+                    if (error.code == 'user-not-found') {
+                      // Jika email tidak terdaftar, tampilkan pesan kesalahan
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('No user found with that email')),
+                      );
+                    } else if (error.code == 'wrong-password') {
+                      // Jika password salah, tampilkan pesan kesalahan
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Wrong password. Please try again')),
+                      );
+                    } else {
+                      // Jika terjadi kesalahan lain, tampilkan pesan
+                      setState(() {
+                        _errorMessage = error.message ?? 'An error occurated';
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(_errorMessage),
+                        ),
+                      );
+                    }
                   } catch (error) {
                     setState(() {
                       _errorMessage = error.toString();
@@ -71,8 +120,8 @@ class SignInScreenState extends State<SignInScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const
-                    SignUpScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => const SignUpScreen()),
                   );
                 },
                 child: const Text('Don\'t have an account? Sign up'),
@@ -82,5 +131,13 @@ class SignInScreenState extends State<SignInScreen> {
         ),
       ),
     );
+  }
+
+  // Fungsi untuk memeriksa validitas email
+  bool isValidEmail(String email) {
+    String emailRegex =
+        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$";
+    RegExp regex = RegExp(emailRegex);
+    return regex.hasMatch(email);
   }
 }

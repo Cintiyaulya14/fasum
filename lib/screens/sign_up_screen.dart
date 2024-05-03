@@ -7,9 +7,11 @@ class SignUpScreen extends StatefulWidget {
   @override
   SignUpScreenState createState() => SignUpScreenState();
 }
+
 class SignUpScreenState extends State<SignUpScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +24,7 @@ class SignUpScreenState extends State<SignUpScreen> {
           children: [
             const SizedBox(height: 32.0),
             TextField(
-              controller: _emailController,
+              controller: emailController,
               decoration: const InputDecoration(
                 labelText: 'Email',
                 border: OutlineInputBorder(),
@@ -30,31 +32,49 @@ class SignUpScreenState extends State<SignUpScreen> {
             ),
             const SizedBox(height: 16.0),
             TextField(
-              controller: _passwordController,
+              controller: passwordController,
               decoration: const InputDecoration(
                 labelText: 'Password',
-                border: OutlineInputBorder(),),
+                border: OutlineInputBorder(),
+              ),
               obscureText: true,
             ),
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () async {
+                final email = emailController.text.trim();
+                final password = passwordController.text.trim();
+
+                if (email.isEmpty || password.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please fill in all fields')),
+                  );
+                  return;
+                }
                 try {
-                  await
-                  FirebaseAuth.instance.createUserWithEmailAndPassword(
-                    // <-- Gunakan FirebaseAuth.instance
-                    email: _emailController.text,
-                    password: _passwordController.text,
+                  await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                    email: email,
+                    password: password,
                   );
                   Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => const
-                    HomeScreen()),
+                    MaterialPageRoute(builder: (context) => const HomeScreen()),
                   );
-                } catch (error) {
-                  print(error.toString());
+                } on FirebaseAuthException catch (e) {
+                  if (e.code == 'weak-password') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('The password provided is too weak')),
+                    );
+                  } else if (e.code == 'email-already-in-use') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('The email address is not valid')),
+                    );
+                  }
                 }
+                ;
               },
-              child: const Text('Sign Up'),
+              child: const Text("Sign Up"),
             ),
           ],
         ),
