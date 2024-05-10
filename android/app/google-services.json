@@ -29,6 +29,13 @@
             {
               "client_id": "447956435710-b9o46kr9d4hqmdrnka49n1k33be0gn56.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "447956435710-snqarop8vstctaftjbgo3f19vvqitsu1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.fasum"
+              }
             }
           ]
         }
