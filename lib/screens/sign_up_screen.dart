@@ -57,7 +57,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                     password: password,
                   );
                   Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => const HomeScreen()),
+                    MaterialPageRoute(builder: (context) => HomeScreen()),
                   );
                 } on FirebaseAuthException catch (e) {
                   if (e.code == 'weak-password') {

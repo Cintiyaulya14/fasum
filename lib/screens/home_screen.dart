@@ -2,9 +2,36 @@ import 'package:fasum/screens/add_post_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fasum/screens/sign_in_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
+class Post {
+  final String username;
+  final String time;
+  final String description;
+  final String imageUrl;
+
+  Post({required this.username, required this.time, required this.description, required this.imageUrl});
+}
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: HomeScreen(),
+    );
+  }
+}
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
   Future<void> signOut(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
     Navigator.of(context).pushReplacement(
@@ -12,6 +39,20 @@ class HomeScreen extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
+    final List<Post> posts = [
+      Post(
+        username: 'calfy',
+        time: '5 menit lalu',
+        description: 'Mickey mouse',
+        imageUrl: 'https://3.bp.blogspot.com/-TfU796NTOhM/WIGCbYkq10I/AAAAAAAACC8/zi7ufs8Y7o0BZtco7rFAHg-VQb-FDOK9wCEw/s1600/VEKTOR+MICKEY+MOUSE.png',
+      ),
+      Post(
+        username: 'Famskuy',
+        time: '1 jam lalu',
+        description: 'Tupaii berbicara',
+        imageUrl: 'https://cdn.kibrispdr.org/data/396/gambar-kartun-png-hd-14.png',
+      ),
+    ];
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
@@ -25,8 +66,48 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: const Center(
-        child: Text('You have logged In'),
+      body: ListView.builder(
+        itemCount: posts.length,
+        itemBuilder: (BuildContext context, index) {
+          return Card(
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    posts[index].username,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                  SizedBox(height: 18.0,),
+                  Text(
+                    posts[index].time,
+                    style: TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  SizedBox(height: 8.0),
+                  Image.network(
+                    posts[index].imageUrl,
+                    width: 300,
+                    height: 300,
+                    fit: BoxFit.fill,
+                  ),
+                  SizedBox(height: 8.0),
+                  Text(
+                    posts[index].description,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
