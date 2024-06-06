@@ -37,6 +37,15 @@ class HomeScreen extends StatelessWidget {
     Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => SignInScreen()));
   }
+
+  void _onKomenPressed() {
+    print('Komen button pressed');
+  }
+
+  void _onLikePressed() {
+    print('Like button pressed');
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Post> posts = [
@@ -101,6 +110,24 @@ class HomeScreen extends StatelessWidget {
                     posts[index].description,
                     style: TextStyle(
                       fontSize: 16.0,
+                    ),
+                  ),
+
+                  ElevatedButton(
+                    onPressed: _onKomenPressed,
+                    child: Icon(
+                      Icons.comment,
+                      size: 30,
+                      color: Colors.blue,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _onLikePressed,
+                    child: Icon(
+                      Icons.thumb_up,
+                      size: 30,
+                      color: Colors.red,
                     ),
                   ),
                 ],
